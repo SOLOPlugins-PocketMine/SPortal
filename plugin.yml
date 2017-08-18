@@ -1,0 +1,29 @@
+name: SPortal
+author: solo
+version: 0.0.1
+api:
+- 3.0.0
+- 3.0.0-ALPHA1
+- 3.0.0-ALPHA2
+- 3.0.0-ALPHA3
+- 3.0.0-ALPHA4
+- 3.0.0-ALPHA5
+- 3.0.0-ALPHA6
+- 3.0.0-ALPHA7
+- 3.0.0-ALPHA8
+- 3.0.0-ALPHA9
+- 3.0.0-ALPHA10
+main: solo\sportal\SPortal
+permissions:
+  sportal:
+    default: op
+    children:
+      sportal.command:
+        default: op
+        children:
+          sportal.command.create:
+            default: op
+          sportal.command.list:
+            default: op
+          sportal.command.remove:
+            default: op
