@@ -34,7 +34,7 @@ class ParticlePortalCreateCommand extends SPortalCommand{
     }
     if(!isset($args[0])){
       $sender->sendMessage(SPortal::$prefix . "사용법 : " . $this->getUsage() . " - " . $this->getDescription());
-      $sender->sendMessage(SPortal::$prefix . "* 파티클 목록 : 거품, 반짝임, 연기, 보라먼지, 불꽃, 용암, 붉은먼지, 하트, 물방울, 그라데이션");
+      $sender->sendMessage(SPortal::$prefix . "* 파티클 목록 : 거품, 반짝임, 연기, 보라먼지, 불꽃, 용암, 붉은먼지, 하트, 물, 그라데이션, 초록별");
       return true;
     }
 
