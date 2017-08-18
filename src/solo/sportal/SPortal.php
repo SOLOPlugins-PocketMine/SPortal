@@ -31,6 +31,7 @@ class SPortal extends PluginBase implements Listener{
 
 
 
+  private $config;
 
   private $swarpInstance;
 
@@ -63,6 +64,13 @@ class SPortal extends PluginBase implements Listener{
       $this->getServer()->getLogger()->critical("[SPortal] 이 플러그인을 사용하기 위해서는 SWarp 플러그인이 필요합니다.");
       $this->getServer()->getPluginManager()->disablePlugin($this);
       return;
+    }
+
+    @mkdir($this->getDataFolder());
+    $this->saveResource("setting.yml");
+    $this->config = new Config($this->getDataFolder() . "setting.yml", Config::YAML);
+    if($this->config->exists("particle-generate-count")){
+      \solo\sportal\portal\ParticlePortal::setParticleGenerateCount(intval($this->config->get("particle-generate-count")));
     }
 
     $this->load();

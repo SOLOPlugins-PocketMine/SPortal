@@ -40,7 +40,7 @@ class ParticlePortalCreateCommand extends SPortalCommand{
 
     $warpName = $args[0];
 
-    $particleId = Particle::TYPE_SMOKE;
+    $particleId = Particle::TYPE_EXPLODE;
     switch($args[1] ?? "default"){
       case "거품":
       case "bubble":
@@ -53,8 +53,8 @@ class ParticlePortalCreateCommand extends SPortalCommand{
         break;
 
       case "연기":
-      case "smoke":
-        $particleId = Particle::TYPE_SMOKE;
+      case "explode":
+        $particleId = Particle::TYPE_EXPLODE;
         break;
 
       case "보라먼지":

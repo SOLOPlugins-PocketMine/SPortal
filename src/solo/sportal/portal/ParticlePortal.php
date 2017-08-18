@@ -5,7 +5,7 @@ namespace solo\sportal\portal;
 use pocketmine\Server;
 use pocketmine\Player;
 use pocketmine\level\Level;
-use pocketmine\level\particle\ExplodeParticle;
+use pocketmine\level\particle\GenericParticle;
 use pocketmine\math\Vector3;
 
 use solo\sportal\SPortal;
@@ -17,9 +17,15 @@ use solo\swarp\WarpException;
 
 class ParticlePortal extends Portal implements ActivateOnSneak, Tickable{
 
-  private $levelInstance = null;
+  private static $generateCount = 10;
 
-  public $particleId;
+  public static function setParticleGenerateCount(int $count){
+    self::$generateCount = $count;
+  }
+
+  private $particleId;
+
+  private $levelInstance = null;
 
   public function __construct(string $warp, $x, $y, $z, string $level, int $particleId){
     parent::__construct($warp, $x, $y, $z, $level);
@@ -46,6 +52,9 @@ class ParticlePortal extends Portal implements ActivateOnSneak, Tickable{
   }
 
   public function onUpdate(int $currentTick){
+    if($currentTick % 3 != 0){
+      return;
+    }
     if($this->levelInstance === null){
       $this->levelInstance = Server::getInstance()->getLevelByName($this->level);
       if(!$this->levelInstance instanceof Level){
@@ -56,7 +65,16 @@ class ParticlePortal extends Portal implements ActivateOnSneak, Tickable{
       $this->levelInstance = null;
       return;
     }
-    $this->levelInstance->addParticle(new ExplodeParticle(new Vector3($this->x + 0.5, $this->y + 0.15, $this->z + 0.5)));
+    $pos = new Vector3($this->x, $this->y, $this->z);
+    $particle = new GenericParticle($pos, $this->particleId);
+    for($i = 0; $i < self::$generateCount; $i++){
+      $particle->setComponents(
+        $pos->x + mt_rand(0, 60) * 0.01 + 0.2,
+        $pos->y + mt_rand(0, 100) * 0.01 + 0.25,
+        $pos->z + mt_rand(0, 60) * 0.01 + 0.2
+      );
+      $this->levelInstance->addParticle($particle);
+    }
   }
 
   public function yamlSerialize(){
