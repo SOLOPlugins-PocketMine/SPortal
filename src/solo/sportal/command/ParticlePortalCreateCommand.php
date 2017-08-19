@@ -84,18 +84,18 @@ class ParticlePortalCreateCommand extends SPortalCommand{
 		
       case "물":
       case "water":
-      	$particleId = Particle::TYPE_WATER_WAKE;
-      	break;
+        $particleId = Particle::TYPE_WATER_WAKE;
+        break;
       	
       case "그라데이션":
       case "gradation":
-      	$particleId = Particle::TYPE_DUST;
-      	break;
+        $particleId = Particle::TYPE_DUST;
+        break;
       	
       case "초록별":
       case "green":
-      	$particleId = Particle::TYPE_VILLAGER_HAPPY;
-      	break;
+        $particleId = Particle::TYPE_VILLAGER_HAPPY;
+        break;
       	
     }
 
