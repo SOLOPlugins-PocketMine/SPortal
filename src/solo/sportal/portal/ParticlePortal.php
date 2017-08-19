@@ -17,7 +17,7 @@ use solo\swarp\WarpException;
 
 class ParticlePortal extends Portal implements ActivateOnSneak, Tickable{
 
-  private static $generateCount = 10;
+  private static $generateCount = 5;
 
   public static function setParticleGenerateCount(int $count){
     self::$generateCount = $count;
@@ -65,6 +65,7 @@ class ParticlePortal extends Portal implements ActivateOnSneak, Tickable{
       $this->levelInstance = null;
       return;
     }
+    $pos = new Vector3();
     switch($this->particleId){
       case 25: //그라데이션 파티클
         for($i = 0; $i < self::$generateCount; $i++){
@@ -76,9 +77,9 @@ class ParticlePortal extends Portal implements ActivateOnSneak, Tickable{
           $this->levelInstance->addParticle($particle);
         }
         break;
-        
+
       default:
-        $particle = new GenericParticle(new Vector3(), $this->particleId);
+        $particle = new GenericParticle($pos, $this->particleId);
         for($i = 0; $i < self::$generateCount; $i++){
           $particle->setComponents(
             $this->x + mt_rand(0, 60) * 0.01 + 0.2,
