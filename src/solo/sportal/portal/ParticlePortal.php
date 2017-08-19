@@ -76,7 +76,7 @@ class ParticlePortal extends Portal implements ActivateOnSneak, Tickable{
           $xz = mt_rand(0, 60) * 0.01 + 0.2;
           $y = mt_rand(0, 100) * 0.01 + 0.25;
           if(!isset($particle)){
-            $particle = new GenericParticle($pos, $this->particleId, (($a & 0xff) << 24) | (($r & 0xff) << 16) | (($g & 0xff) << 8) | ($b & 0xff));
+            $particle = new GenericParticle($pos, $this->particleId, ($a << 24) | ($r << 16) | ($g << 8) | $b);
           }else{
             $pos = new Vector3($particle->x+$xz, $particle->y+$y, $particle->z+$xz);
             $particle = new GenericParticle($pos, $this->particleId, (($a & 0xff) << 24) | (($r & 0xff) << 16) | (($g & 0xff) << 8) | ($b & 0xff));
