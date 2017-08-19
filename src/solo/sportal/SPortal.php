@@ -15,6 +15,8 @@ use solo\sportal\hook\ActivateOnBlockTouch;
 use solo\sportal\hook\ActivateOnSneak;
 use solo\sportal\hook\Tickable;
 use solo\sportal\task\PortalTickTask;
+use pocketmine\event\block\BlockBreakEvent;
+use GeoIp2\Record\Postal;
 
 class SPortal extends PluginBase implements Listener{
 
@@ -174,6 +176,20 @@ class SPortal extends PluginBase implements Listener{
 
   public function handlePlayerQuit(PlayerQuitEvent $event){
     $this->removeProcess($event->getPlayer());
+  }
+  
+  public function handleBlockBreak(BlockBreakEvent $event){
+  	$block = $event->getBlock();
+  	$pos = new Position($block->x, $block->y, $block->z, $block->getLevel());
+  	
+  	if (self::getPortal($pos) !== null) {
+  		if (!$event->getPlayer()->hasPermission("sportal.command.remove")){
+	  		$event->getPlayer()->sendMessage(self::$prefix . "포탈을 제거할 권한이 없습니다.");
+	  		return;
+  		}
+  		self::removePortal($pos);
+  		$event->getPlayer()->sendMessage(SPortal::$prefix . "포탈을 제거하였습니다.");
+  	}
   }
 
   public function handleTick(int $currentTick){
