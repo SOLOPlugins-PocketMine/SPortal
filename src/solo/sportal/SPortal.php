@@ -182,7 +182,6 @@ class SPortal extends PluginBase implements Listener{
       if(!$event->getPlayer()->hasPermission("sportal.command.remove")){
         $event->getPlayer()->sendMessage(SPortal::$prefix . "포탈을 제거할 권한이 없습니다.");
         $event->setCancelled();
-        return;
       }
     }
   }
