@@ -179,10 +179,8 @@ class SPortal extends PluginBase implements Listener{
   
   public function handleBlockBreak(BlockBreakEvent $event){
     if($this->getPortal($event->getBlock()) !== null){
-      if(!$event->getPlayer()->hasPermission("sportal.command.remove")){
-        $event->getPlayer()->sendMessage(SPortal::$prefix . "포탈을 제거할 권한이 없습니다.");
-        $event->setCancelled();
-      }
+      $event->getPlayer()->sendMessage(SPortal::$prefix . "포탈을 파괴할 수 없습니다.");
+      $event->setCancelled();
     }
   }
 
