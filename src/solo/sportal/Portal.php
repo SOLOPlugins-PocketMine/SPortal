@@ -49,7 +49,7 @@ abstract class Portal{
   public function warp(Player $player){
     $warp = SPortal::getInstance()->getWarp($this->warp);
     if($warp === null){
-      throw new \PortalException($this->warp . " 워프가 존재하지 않습니다.");
+      throw new PortalException($this->warp . " 워프가 존재하지 않습니다.");
     }
     $warp->warp($player);
   }
