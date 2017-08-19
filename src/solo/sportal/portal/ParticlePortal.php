@@ -65,7 +65,7 @@ class ParticlePortal extends Portal implements ActivateOnSneak, Tickable{
       $this->levelInstance = null;
       return;
     }
-    $pos = new Vector3();
+    $pos = new Vector3($this->x, $this->y, $this->z);
     switch($this->particleId){
       case 25: //그라데이션 파티클
         for($i = 0; $i < self::$generateCount; $i++){
