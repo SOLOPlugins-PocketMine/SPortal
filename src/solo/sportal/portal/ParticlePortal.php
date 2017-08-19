@@ -14,7 +14,6 @@ use solo\sportal\PortalException;
 use solo\sportal\hook\ActivateOnSneak;
 use solo\sportal\hook\Tickable;
 use solo\swarp\WarpException;
-use pocketmine\level\particle\DustParticle;
 
 class ParticlePortal extends Portal implements ActivateOnSneak, Tickable{
 
