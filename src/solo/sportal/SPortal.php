@@ -10,13 +10,12 @@ use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerToggleSneakEvent;
 use pocketmine\event\player\PlayerQuitEvent;
+use pocketmine\event\block\BlockBreakEvent;
 
 use solo\sportal\hook\ActivateOnBlockTouch;
 use solo\sportal\hook\ActivateOnSneak;
 use solo\sportal\hook\Tickable;
 use solo\sportal\task\PortalTickTask;
-use pocketmine\event\block\BlockBreakEvent;
-use GeoIp2\Record\Postal;
 
 class SPortal extends PluginBase implements Listener{
 
