@@ -66,7 +66,7 @@ class ParticlePortal extends Portal implements ActivateOnSneak, Tickable{
       return;
     }
     switch($this->particleId){
-      case "25": //그라데이션 파티클
+      case 25: //그라데이션 파티클
         for($i = 0; $i < self::$generateCount; $i++){
           $particle = new GenericParticle($pos->setComponents(
             $this->x + mt_rand(0, 60) * 0.01 + 0.2,
