@@ -1,6 +1,6 @@
-name: SPortal
+name: SWarp
 author: solo
-version: 0.0.1
+version: 0.1.1
 api:
 - 3.0.0
 - 3.0.0-ALPHA1
@@ -12,18 +12,36 @@ api:
 - 3.0.0-ALPHA7
 - 3.0.0-ALPHA8
 - 3.0.0-ALPHA9
-- 3.0.0-ALPHA10
-main: solo\sportal\SPortal
+main: solo\swarp\SWarp
 permissions:
-  sportal:
+  swarp:
     default: op
     children:
-      sportal.command:
+      swarp.warp:
         default: op
         children:
-          sportal.command.create:
+          swarp.warp.default:
+            default: true
+          swarp.warp.op:
             default: op
-          sportal.command.list:
+      swarp.command:
+        default: op
+        children:
+          swarp.command.warp:
+            default: true
+          swarp.command.create:
             default: op
-          sportal.command.remove:
+          swarp.command.setdescription:
+            default: op
+          swarp.command.info:
+            default: op
+          swarp.command.list:
+            default: true
+          swarp.command.setoptions:
+            default: op
+          swarp.command.setpermission:
+            default: op
+          swarp.command.remove:
+            default: op
+          swarp.command.worldmove:
             default: op
