@@ -10,6 +10,7 @@ use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerToggleSneakEvent;
 use pocketmine\event\player\PlayerQuitEvent;
+use pocketmine\event\block\BlockBreakEvent;
 
 use solo\sportal\hook\ActivateOnBlockTouch;
 use solo\sportal\hook\ActivateOnSneak;
@@ -174,6 +175,13 @@ class SPortal extends PluginBase implements Listener{
 
   public function handlePlayerQuit(PlayerQuitEvent $event){
     $this->removeProcess($event->getPlayer());
+  }
+  
+  public function handleBlockBreak(BlockBreakEvent $event){
+    if($this->getPortal($event->getBlock()) !== null){
+      $event->getPlayer()->sendMessage(SPortal::$prefix . "포탈을 파괴할 수 없습니다.");
+      $event->setCancelled();
+    }
   }
 
   public function handleTick(int $currentTick){

@@ -65,15 +65,29 @@ class ParticlePortal extends Portal implements ActivateOnSneak, Tickable{
       $this->levelInstance = null;
       return;
     }
-    $pos = new Vector3($this->x, $this->y, $this->z);
-    $particle = new GenericParticle($pos, $this->particleId);
-    for($i = 0; $i < self::$generateCount; $i++){
-      $particle->setComponents(
-        $pos->x + mt_rand(0, 60) * 0.01 + 0.2,
-        $pos->y + mt_rand(0, 100) * 0.01 + 0.25,
-        $pos->z + mt_rand(0, 60) * 0.01 + 0.2
-      );
-      $this->levelInstance->addParticle($particle);
+    switch($this->particleId){
+      case 25: //그라데이션 파티클
+        for($i = 0; $i < self::$generateCount; $i++){
+          $particle = new GenericParticle($pos->setComponents(
+            $this->x + mt_rand(0, 60) * 0.01 + 0.2,
+            $this->y + mt_rand(0, 100) * 0.01 + 0.25,
+            $this->z + mt_rand(0, 60) * 0.01 + 0.2
+          ), $this->particleId, mt_rand(0, 16777215));
+          $this->levelInstance->addParticle($particle);
+        }
+        break;
+        
+      default:
+        $particle = new GenericParticle(new Vector3(), $this->particleId);
+        for($i = 0; $i < self::$generateCount; $i++){
+          $particle->setComponents(
+            $this->x + mt_rand(0, 60) * 0.01 + 0.2,
+            $this->y + mt_rand(0, 100) * 0.01 + 0.25,
+            $this->z + mt_rand(0, 60) * 0.01 + 0.2
+          );
+          $this->levelInstance->addParticle($particle);
+        }
+        break;
     }
   }
 
