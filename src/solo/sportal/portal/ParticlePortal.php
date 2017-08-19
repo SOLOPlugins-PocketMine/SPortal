@@ -65,31 +65,25 @@ class ParticlePortal extends Portal implements ActivateOnSneak, Tickable{
       $this->levelInstance = null;
       return;
     }
-    $pos = new Vector3($this->x, $this->y, $this->z);
     switch($this->particleId){
       case "25": //그라데이션 파티클
         for($i = 0; $i < self::$generateCount; $i++){
-          $r = mt_rand(0, 255);
-          $g = mt_rand(0, 255);
-          $b = mt_rand(0, 255);
-          $xz = mt_rand(0, 60) * 0.01 + 0.2;
-          $y = mt_rand(0, 100) * 0.01 + 0.25;
-          if(!isset($particle)){
-            $particle = new GenericParticle($pos, $this->particleId, ($r << 16) | ($g << 8) | $b);
-          }else{
-            $pos = new Vector3($particle->x + $xz, $particle->y + $y, $particle->z + $xz);
-            $particle = new GenericParticle($pos, $this->particleId, ($r << 16) | ($g << 8) | $b);
-          }
+          $particle = new GenericParticle($pos->setComponents(
+            $this->x + mt_rand(0, 60) * 0.01 + 0.2,
+            $this->y + mt_rand(0, 100) * 0.01 + 0.25,
+            $this->z + mt_rand(0, 60) * 0.01 + 0.2
+          ), $this->particleId, mt_rand(0, 16777215));
           $this->levelInstance->addParticle($particle);
         }
         break;
+        
       default:
-        $particle = new GenericParticle($pos, $this->particleId);
+        $particle = new GenericParticle(new Vector3(), $this->particleId);
         for($i = 0; $i < self::$generateCount; $i++){
           $particle->setComponents(
-            $pos->x + mt_rand(0, 60) * 0.01 + 0.2,
-            $pos->y + mt_rand(0, 100) * 0.01 + 0.25,
-            $pos->z + mt_rand(0, 60) * 0.01 + 0.2
+            $this->x + mt_rand(0, 60) * 0.01 + 0.2,
+            $this->y + mt_rand(0, 100) * 0.01 + 0.25,
+            $this->z + mt_rand(0, 60) * 0.01 + 0.2
           );
           $this->levelInstance->addParticle($particle);
         }
