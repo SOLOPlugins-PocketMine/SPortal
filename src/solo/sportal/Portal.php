@@ -6,11 +6,11 @@ use pocketmine\Player;
 
 abstract class Portal{
 
-  public $warp;
-  public $x;
-  public $y;
-  public $z;
-  public $level;
+  protected $warp;
+  protected $x;
+  protected $y;
+  protected $z;
+  protected $level;
 
   public function __construct(string $warp, $x, $y, $z, string $level){
     $this->warp = $warp;
@@ -65,8 +65,7 @@ abstract class Portal{
   }
 
   public static function yamlDeserialize(array $data){
-    $ref = new \ReflectionClass(static::class);
-    $portal = $ref->newInstanceWithoutConstructor();
+    $portal = (new \ReflectionClass(static::class))->newInstanceWithoutConstructor();
     $portal->warp = $data["warp"];
     $portal->x = $data["x"];
     $portal->y = $data["y"];
