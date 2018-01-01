@@ -131,7 +131,7 @@ class PortalManager implements Listener{
         $this->getServer()->getLogger()->critical("[SPortal] " . $class . " 클래스는 " . Portal::class . " 의 서브클래스가 아닙니다.");
         continue;
       }
-      $portal = $class::yamlDeserialize($data);
+      $portal = $class::jsonDeserialize($data);
 
       $this->portals[$portal->getHash()] = $portal;
 

@@ -81,7 +81,7 @@ abstract class Portal extends Vector3{
     ];
   }
 
-  public static function yamlDeserialize(array $data) : Portal{
+  public static function jsonDeserialize(array $data) : Portal{
     $portal = (new \ReflectionClass(static::class))->newInstanceWithoutConstructor();
     $portal->warp = $data["warp"];
     $portal->x = $data["x"];
