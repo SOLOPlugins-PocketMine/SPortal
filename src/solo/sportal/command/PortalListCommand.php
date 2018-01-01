@@ -43,7 +43,7 @@ class PortalListCommand extends Command{
       if($i > $page * $pageHeight){
         break;
       }
-      $message = "§7[" . $i . "] " . $portal->getName() . ", 목적지 : " . $portal->getWarp() . " (x=" . $portal->getX() . ", y=" . $portal->getY() . ", z=" . $portal->getZ() . ", level=" . $portal->getLevel() . ")";
+      $message = "§7[" . $i . "] " . $portal->getName() . ", 목적지 : " . ($portal->getWarp() instanceof Warp ? $warp->getName() : "워프를 찾을 수 없습니다") . " (x=" . $portal->getX() . ", y=" . $portal->getY() . ", z=" . $portal->getZ() . ", level=" . $portal->getLevel() . ")";
       $sender->sendMessage($message);
     }
     return true;

@@ -10,34 +10,38 @@ use solo\swarp\Warp;
 abstract class Portal extends Vector3{
 
   /** @var string */
-  protected $warp;
+  protected $warpName;
 
   /** @var string */
-  protected $level;
+  protected $levelName;
 
-  public function __construct($warp = "", float $x = 0, float $y = 0, float $z = 0, string $level = ""){
+  public function __construct($warp = "", float $x = 0, float $y = 0, float $z = 0, $level = ""){
     parent::__construct($x, $y, $z);
     $this->setWarp($warp);
-    $this->level = $level;
+    $this->levelName = $level instanceof;
   }
 
   public function setWarp($warp) : Portal{
-    $this->warp = $warp instanceof Warp ? $warp->getName() : $warp;
+    $this->warpName = $warp instanceof Warp ? $warp->getName() : $warp;
 
     return $this;
   }
 
-  public function setPosition(Position $pos) : Portal{
+  public function setLevel($level) : Portal{
     if(!empty($this->level)){
       throw new PortalException("처음 지정된 위치 값은 변경할 수 없습니다.");
     }
+    $this->level = $level instanceof Level ? $level->getFolderName() : $level;
+  }
+
+  public function setPosition(Position $pos) : Portal{
     if(!$pos->isValid()){
-      throw new PortalException("월드 값이 비어있습니다");
+      throw new PortalException("Level 값은 null이 될 수 없습니다.");
     }
+    $this->setLevel($pos->getLevel());
     $this->x = $pos->getFloorX();
     $this->y = $pos->getFloorY();
     $this->z = $pos->getFloorZ();
-    $this->level = $pos->getLevel()->getFolderName();
 
     return $this;
   }
@@ -56,15 +60,15 @@ abstract class Portal extends Vector3{
     return $this->x . ":" . $this->y . ":" . $this->z . ":" . $this->level;
   }
 
-  public function getWarp() : string{
-    return $this->warp;
+  public function getWarp() : ?Warp{
+    return SWarp::getInstance()->getWarp($this->warp);
   }
 
   public function warp(Player $player){
     if(!$this->isValid()){
       throw new PortalException("포탈의 데이터 값이 부족합니다.");
     }
-    $warp = SWarp::getInstance()->getWarp($this->warp);
+    $warp = $this->getWarp();
     if($warp === null){
       throw new PortalException($this->warp . " 워프가 존재하지 않습니다.");
     }
