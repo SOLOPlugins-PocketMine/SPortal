@@ -39,8 +39,6 @@ class SPortal extends PluginBase{
   }
 
   public function onEnable(){
-    $this->swarpInstance = $this->getServer()->getPluginManager()->getPlugin("SWarp");
-
     @mkdir($this->getDataFolder());
     $this->saveResource("setting.yml");
     $this->config = new Config($this->getDataFolder() . "setting.yml", Config::YAML);
@@ -51,8 +49,10 @@ class SPortal extends PluginBase{
     $this->portalManager = new PortalManager($this);
 
     foreach([
-      "ParticlePortalCreateCommand", "TouchPortalCreateCommand",
-      "PortalListCommand", "PortalRemoveCommand"
+      "ParticlePortalCreateCommand",
+      "TouchPortalCreateCommand",
+      "PortalListCommand",
+      "PortalRemoveCommand"
     ] as $class){
       $class = "\\solo\\sportal\\command\\" . $class;
       $this->getServer()->getCommandMap()->register("sportal", new $class($this));
@@ -68,38 +68,20 @@ class SPortal extends PluginBase{
     self::$instance = null;
   }
 
-  public function addPortal(Portal $portal){
-    $this->portals[$portal->getId()] = $portal;
-
-    if($portal instanceof ActivateOnBlockTouch){
-      $this->onBlockTouch[$portal->getId()] = $portal;
-    }
-    if($portal instanceof ActivateOnSneak){
-      $this->onSneak[$portal->getId()] = $portal;
-    }
-    if($portal instanceof Tickable){
-      $this->tickList[$portal->getId()] = $portal;
-    }
+  public function addPortal(Portal $portal) : Portal{
+    return $this->portalManager->addPortal($portal);
   }
 
-  public function getWarp(string $name){
-    return $this->swarpInstance->getWarp($name);
+  public function getAllPortal() : array{
+    return $this->portalManager->getAllPortal();
   }
 
-  public function getPortal(Position $pos){
-    return $this->portals[$pos->getFloorX() . ":" . $pos->getFloorY() . ":" . $pos->getFloorZ() . ":" . $pos->getLevel()->getFolderName()] ?? null;
+  public function getPortal(Position $pos) : ?Portal{
+    return $this->portalManager->getPortal($pos);
   }
 
-  public function getAllPortal(){
-    return $this->portals;
-  }
-
-  public function removePortal(Position $pos){
-    $hash = $pos->getFloorX() . ":" . $pos->getFloorY() . ":" . $pos->getFloorZ() . ":" . $pos->getLevel()->getFolderName();
-    unset($this->portals[$hash]);
-    unset($this->onBlockTouch[$hash]);
-    unset($this->onSneak[$hash]);
-    unset($this->tickList[$hash]);
+  public function removePortal(Position $pos) : Portal{
+    return $this->portalManager->removePortal($pos);
   }
 
   public function setProcess(Player $player, Process $process){
@@ -121,36 +103,11 @@ class SPortal extends PluginBase{
         if($process->isEnd()){
           $this->removeProcess($event->getPlayer());
         }
-        return;
-      }
-
-      $block = $event->getBlock();
-      $hash = $block->getFloorX() . ":" . $block->getFloorY() . ":" . $block->getFloorZ() . ":" . $block->getLevel()->getFolderName();
-
-      if(isset($this->onBlockTouch[$hash])){
-        $this->onBlockTouch[$hash]->onBlockTouch($event->getPlayer());
-      }
-    }
-  }
-
-  public function handleSneak(PlayerToggleSneakEvent $event){
-    if($event->isSneaking()){
-      $player = $event->getPlayer();
-      $hash = $player->getFloorX() . ":" . $player->getFloorY() . ":" . $player->getFloorZ() . ":" . $player->getLevel()->getFolderName();
-
-      if(isset($this->onSneak[$hash])){
-        $this->onSneak[$hash]->onSneak($player);
       }
     }
   }
 
   public function handlePlayerQuit(PlayerQuitEvent $event){
     $this->removeProcess($event->getPlayer());
-  }
-
-  public function handleTick(int $currentTick){
-    foreach($this->tickList as $portal){
-      $portal->onUpdate($currentTick);
-    }
   }
 }
