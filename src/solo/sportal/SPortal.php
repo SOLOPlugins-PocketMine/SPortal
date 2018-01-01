@@ -36,7 +36,7 @@ class SPortal extends PluginBase{
     $this->saveResource("setting.yml");
     $this->config = new Config($this->getDataFolder() . "setting.yml", Config::YAML);
 
-    \solo\sportal\portal\ParticlePortal::$particleGenerateCount = intval($this->config->get("particle-generate-count", 5));
+    \solo\sportal\portal\ParticlePortal::$generateCount = intval($this->config->get("particle-generate-count", 5));
 
     $this->portalManager = new PortalManager($this);
 
