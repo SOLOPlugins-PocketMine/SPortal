@@ -4,51 +4,31 @@ namespace solo\sportal;
 
 use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
+use pocketmine\event\Listener;
 use pocketmine\level\Position;
 use pocketmine\utils\Config;
-use pocketmine\event\Listener;
-use pocketmine\event\player\PlayerInteractEvent;
-use pocketmine\event\player\PlayerToggleSneakEvent;
-use pocketmine\event\player\PlayerQuitEvent;
-use pocketmine\event\block\BlockBreakEvent;
 
-use solo\sportal\hook\ActivateOnBlockTouch;
-use solo\sportal\hook\ActivateOnSneak;
-use solo\sportal\hook\Tickable;
-use solo\sportal\task\PortalTickTask;
-
-class SPortal extends PluginBase implements Listener{
-
-  private static $instance = null;
+class SPortal extends PluginBase{
 
   public static $prefix = "§b§l[SPortal] §r§7";
 
+  private static $instance = null;
+
   public static function getInstance() : SPortal{
-    if(self::$instance === null){
-      throw new \InvalidStateException();
-    }
     return self::$instance;
   }
 
 
+  /** @var Config */
+  private $setting;
 
-  private $config;
-
+  /** @var SWarp */
   private $swarpInstance;
 
-    // For portals
-  private $portals = [];
+  /** @var PortalManager */
+  private $portalManager = null;
 
-  private $portalsConfig;
-
-
-
-  private $onBlockTouch = [];
-  private $onSneak = [];
-
-  private $tickList = [];
-
-  // For players
+  /** @var Process[] */
   private $processList = [];
 
   public function onLoad(){
@@ -59,13 +39,7 @@ class SPortal extends PluginBase implements Listener{
   }
 
   public function onEnable(){
-    // Dependency Check
     $this->swarpInstance = $this->getServer()->getPluginManager()->getPlugin("SWarp");
-    if($this->swarpInstance === null){
-      $this->getServer()->getLogger()->critical("[SPortal] 이 플러그인을 사용하기 위해서는 SWarp 플러그인이 필요합니다.");
-      $this->getServer()->getPluginManager()->disablePlugin($this);
-      return;
-    }
 
     @mkdir($this->getDataFolder());
     $this->saveResource("setting.yml");
@@ -74,25 +48,22 @@ class SPortal extends PluginBase implements Listener{
       \solo\sportal\portal\ParticlePortal::setParticleGenerateCount(intval($this->config->get("particle-generate-count")));
     }
 
-    $this->load();
+    $this->portalManager = new PortalManager($this);
 
     foreach([
-      "ParticlePortalCreateCommand",
-      "TouchPortalCreateCommand",
-      "PortalListCommand",
-      "PortalRemoveCommand"
+      "ParticlePortalCreateCommand", "TouchPortalCreateCommand",
+      "PortalListCommand", "PortalRemoveCommand"
     ] as $class){
       $class = "\\solo\\sportal\\command\\" . $class;
       $this->getServer()->getCommandMap()->register("sportal", new $class($this));
     }
-
-    $this->getServer()->getPluginManager()->registerEvents($this, $this);
-
-    $this->getServer()->getScheduler()->scheduleRepeatingTask(new PortalTickTask($this), 1);
   }
 
   public function onDisable(){
-    $this->save();
+    if($this->portalManager !== null){
+      $this->portalManager->save();
+      $this->portalManager = null;
+    }
 
     self::$instance = null;
   }
@@ -176,50 +147,10 @@ class SPortal extends PluginBase implements Listener{
   public function handlePlayerQuit(PlayerQuitEvent $event){
     $this->removeProcess($event->getPlayer());
   }
-  
-  public function handleBlockBreak(BlockBreakEvent $event){
-    if($this->getPortal($event->getBlock()) !== null){
-      $event->getPlayer()->sendMessage(SPortal::$prefix . "포탈을 파괴할 수 없습니다.");
-      $event->setCancelled();
-    }
-  }
 
   public function handleTick(int $currentTick){
     foreach($this->tickList as $portal){
       $portal->onUpdate($currentTick);
     }
-  }
-
-  public function load(){
-    @mkdir($this->getDataFolder());
-
-    $this->portalsConfig = new Config($this->getDataFolder() . "portals.yml", Config::YAML);
-
-    foreach($this->portalsConfig->getAll() as $data){
-      $class = $data["class"];
-      unset($data["class"]);
-      if(!class_exists($class, true)){
-        $this->getServer()->getLogger()->critical("[SPortal] " . $class . " 클래스가 존재하지 않습니다.");
-        continue;
-      }
-      if(!is_subclass_of($class, Portal::class)){
-        $this->getServer()->getLogger()->critical("[SPortal] " . $class . " 클래스는 " . Portal::class . " 의 서브클래스가 아닙니다.");
-        continue;
-      }
-      $portal = $class::yamlDeserialize($data);
-
-      $this->addPortal($portal);
-    }
-  }
-
-  public function save(){
-    $portalsSerialized = [];
-    foreach($this->portals as $portal){
-      $data = $portal->yamlSerialize();
-      $data["class"] = get_class($portal);
-      $portalsSerialized[] = $data;
-    }
-    $this->portalsConfig->setAll($portalsSerialized);
-    $this->portalsConfig->save();
   }
 }
