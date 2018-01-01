@@ -6,11 +6,26 @@ use pocketmine\Player;
 use pocketmine\command\CommandSender;
 use pocketmine\block\Block;
 use pocketmine\level\particle\Particle;
+use solo\swarp\SWarp;
 use solo\sportal\SPortal;
 use solo\sportal\Process;
 use solo\sportal\portal\ParticlePortal;
 
 class ParticlePortalCreateCommand extends Command{
+
+  public static $particles = [
+    "거품" => Particle::TYPE_BUBBLE,
+    "반짝임" => Particle::TYPE_CRITICAL,
+    "연기" => Particle::TYPE_EXPLODE,
+    "보라먼지" => Particle::TYPE_PORTAL,
+    "불꽃" => Particle::TYPE_FLAME,
+    "불덩이" => Particle::TYPE_LAVA,
+    "붉은먼지" => Particle::TYPE_RISING_RED_DUST,
+    "하트" => Particle::TYPE_HEART,
+    "물" => Particle::TYPE_WATER_WAKE,
+    "그라데이션" => Particle::TYPE_DUST,
+    "초록별" => Particle::TYPE_VILLAGER_HAPPY
+  ];
 
   /** @var SPortal */
   private $owner;
@@ -31,78 +46,19 @@ class ParticlePortalCreateCommand extends Command{
       $sender->sendMessage(SPortal::$prefix . "이 명령을 실행할 권한이 없습니다.");
       return true;
     }
-    if(!isset($args[0])){
+    if(empty($args)){
       $sender->sendMessage(SPortal::$prefix . "사용법 : " . $this->getUsage() . " - " . $this->getDescription());
-      $sender->sendMessage(SPortal::$prefix . "* 파티클 목록 : 거품, 반짝임, 연기, 보라먼지, 불꽃, 용암, 붉은먼지, 하트, 물, 그라데이션, 초록별");
+      $sender->sendMessage(SPortal::$prefix . "* 파티클 목록 : " . implode(array_keys(self::$particles)));
       return true;
     }
 
-    $warpName = $args[0];
-
-    $particleId = Particle::TYPE_EXPLODE;
-    switch($args[1] ?? "default"){
-      case "거품":
-      case "bubble":
-        $particleId = Particle::TYPE_BUBBLE;
-        break;
-
-      case "반짝임":
-      case "crit":
-        $particleId = Particle::TYPE_CRITICAL;
-        break;
-
-      case "연기":
-      case "explode":
-        $particleId = Particle::TYPE_EXPLODE;
-        break;
-
-      case "보라먼지":
-      case "portal":
-        $particleId = Particle::TYPE_PORTAL;
-        break;
-
-      case "불꽃":
-      case "flame":
-        $particleId = Particle::TYPE_FLAME;
-        break;
-
-      case "용암":
-      case "lava":
-        $particleId = Particle::TYPE_LAVA;
-        break;
-
-      case "붉은먼지":
-      case "reddust":
-        $particleId = Particle::TYPE_RISING_RED_DUST;
-        break;
-
-      case "하트":
-      case "heart":
-        $particleId = Particle::TYPE_HEART;
-        break;
-
-      case "물":
-      case "water":
-        $particleId = Particle::TYPE_WATER_WAKE;
-        break;
-
-      case "그라데이션":
-      case "gradation":
-        $particleId = Particle::TYPE_DUST;
-        break;
-
-      case "초록별":
-      case "green":
-        $particleId = Particle::TYPE_VILLAGER_HAPPY;
-        break;
-
-    }
-
-    $warp = $this->owner->getWarp($warpName);
+    $warp = SWarp::getInstance()->getWarp($warpName = array_shift($args));
     if($warp === null){
       $sender->sendMessage(SPortal::$prefix . $warpName . " 워프는 존재하지 않습니다.");
       return true;
     }
+
+    $particleId = self::$particles[array_shift($args)] ?? Particle::TYPE_EXPLODE;
 
     $this->owner->setProcess($sender, new ParticlePortalCreateProcess($sender, $warpName, $particleId));
     return true;
