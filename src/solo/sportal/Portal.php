@@ -3,42 +3,29 @@
 namespace solo\sportal;
 
 use pocketmine\Player;
+use pocketmine\math\Vector3;
 
-abstract class Portal{
+abstract class Portal extends Vector3{
 
+  /** @var string */
   protected $warp;
-  protected $x;
-  protected $y;
-  protected $z;
+
+  /** @var string */
   protected $level;
 
-  public function __construct(string $warp, $x, $y, $z, string $level){
+  public function __construct(string $warp, float $x, float $y, float $z, string $level){
+    parent::__construct($x, $y, $z);
     $this->warp = $warp;
-    $this->x = $x;
-    $this->y = $y;
-    $this->z = $z;
     $this->level = $level;
   }
 
-  abstract public function getName();
+  abstract public function getName() : string;
 
-  public function getX(){
-    return $this->x;
-  }
-
-  public function getY(){
-    return $this->y;
-  }
-
-  public function getZ(){
-    return $this->z;
-  }
-
-  public function getLevel(){
+  public function getLevel() : string{
     return $this->level;
   }
 
-  public function getId() : string{
+  public function getHash() : string{
     return $this->x . ":" . $this->y . ":" . $this->z . ":" . $this->level;
   }
 
