@@ -6,13 +6,12 @@ use pocketmine\Player;
 use pocketmine\command\CommandSender;
 use pocketmine\block\Block;
 use pocketmine\level\Position;
-
 use solo\sportal\SPortal;
-use solo\sportal\SPortalCommand;
 use solo\sportal\Process;
 
-class PortalRemoveCommand extends SPortalCommand{
+class PortalRemoveCommand extends Command{
 
+  /** @var SPortal */
   private $owner;
 
   public function __construct(SPortal $owner){
@@ -22,7 +21,7 @@ class PortalRemoveCommand extends SPortalCommand{
     $this->owner = $owner;
   }
 
-  public function _execute(CommandSender $sender, string $label, array $args) : bool{
+  public function execute(CommandSender $sender, string $label, array $args) : bool{
     if(!$sender instanceof Player){
       $sender->sendMessage(SPortal::$prefix . "인게임에서만 사용할 수 있습니다.");
       return true;
@@ -63,7 +62,7 @@ class PortalRemoveProcess extends Process{
         $this->player->sendMessage(SPortal::$prefix . "포탈을 제거하였습니다.");
 
         SPortal::getInstance()->save();
-        
+
         return;
       }
     }

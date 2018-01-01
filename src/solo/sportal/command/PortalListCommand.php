@@ -6,11 +6,11 @@ use pocketmine\Player;
 use pocketmine\command\CommandSender;
 
 use solo\sportal\SPortal;
-use solo\sportal\SPortalCommand;
 use solo\sportal\Process;
 
-class PortalListCommand extends SPortalCommand{
+class PortalListCommand extends Command{
 
+  /** @var SPortal */
   private $owner;
 
   public function __construct(SPortal $owner){
@@ -20,7 +20,7 @@ class PortalListCommand extends SPortalCommand{
     $this->owner = $owner;
   }
 
-  public function _execute(CommandSender $sender, string $label, array $args) : bool{
+  public function execute(CommandSender $sender, string $label, array $args) : bool{
     if(!$sender->hasPermission($this->getPermission())){
       $sender->sendMessage(SPortal::$prefix . "이 명령을 실행할 권한이 없습니다.");
       return true;

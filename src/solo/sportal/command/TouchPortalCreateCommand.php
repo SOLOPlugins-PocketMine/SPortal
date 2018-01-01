@@ -7,12 +7,12 @@ use pocketmine\command\CommandSender;
 use pocketmine\block\Block;
 
 use solo\sportal\SPortal;
-use solo\sportal\SPortalCommand;
 use solo\sportal\Process;
 use solo\sportal\portal\BlockTouchPortal;
 
-class TouchPortalCreateCommand extends SPortalCommand{
+class TouchPortalCreateCommand extends Command{
 
+  /** @var SPortal */
   private $owner;
 
   public function __construct(SPortal $owner){
@@ -22,7 +22,7 @@ class TouchPortalCreateCommand extends SPortalCommand{
     $this->owner = $owner;
   }
 
-  public function _execute(CommandSender $sender, string $label, array $args) : bool{
+  public function execute(CommandSender $sender, string $label, array $args) : bool{
     if(!$sender instanceof Player){
       $sender->sendMessage(SPortal::$prefix . "인게임에서만 사용할 수 있습니다.");
       return true;

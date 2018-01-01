@@ -6,14 +6,13 @@ use pocketmine\Player;
 use pocketmine\command\CommandSender;
 use pocketmine\block\Block;
 use pocketmine\level\particle\Particle;
-
 use solo\sportal\SPortal;
-use solo\sportal\SPortalCommand;
 use solo\sportal\Process;
 use solo\sportal\portal\ParticlePortal;
 
-class ParticlePortalCreateCommand extends SPortalCommand{
+class ParticlePortalCreateCommand extends Command{
 
+  /** @var SPortal */
   private $owner;
 
   public function __construct(SPortal $owner){
@@ -23,7 +22,7 @@ class ParticlePortalCreateCommand extends SPortalCommand{
     $this->owner = $owner;
   }
 
-  public function _execute(CommandSender $sender, string $label, array $args) : bool{
+  public function execute(CommandSender $sender, string $label, array $args) : bool{
     if(!$sender instanceof Player){
       $sender->sendMessage(SPortal::$prefix . "인게임에서만 사용할 수 있습니다.");
       return true;
@@ -81,22 +80,22 @@ class ParticlePortalCreateCommand extends SPortalCommand{
       case "heart":
         $particleId = Particle::TYPE_HEART;
         break;
-		
+
       case "물":
       case "water":
         $particleId = Particle::TYPE_WATER_WAKE;
         break;
-      	
+
       case "그라데이션":
       case "gradation":
         $particleId = Particle::TYPE_DUST;
         break;
-      	
+
       case "초록별":
       case "green":
         $particleId = Particle::TYPE_VILLAGER_HAPPY;
         break;
-      	
+
     }
 
     $warp = $this->owner->getWarp($warpName);
