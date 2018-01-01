@@ -40,15 +40,15 @@ class TouchPortalCreateCommand extends Command{
 
     $portal = new BlockTouchPortal();
     $portal->setWarp($warp);
-    $portalManager = $this->owner->getPortalManager();
-    $portalManager->queuePlayerInteract($sender, function(PlayerInteractEvent $event) use($portalManager, $portal){
+    $this->owner->getPortalManager()->queuePlayerInteract($sender, function(PlayerInteractEvent $event) use($portal){
       try{
-        $portalManager->addPortal($portal->setPosition($event->getBlock()));
+        SPortal::getInstance()->addPortal($portal->setPosition($event->getBlock()));
         $player->sendMessage(SPortal::$prefix . "포탈을 성공적으로 생성하였습니다.");
       }catch(PortalException $e){
         $player->sendMessage(SPortal::$prefix . $e->getMessage());
       }
     });
+    $sender->sendMessage(SPortal::$prefix . "포탈을 생성할 위치에 있는 블럭을 터치해주세요");
     return true;
   }
 }

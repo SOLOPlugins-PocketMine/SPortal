@@ -21,9 +21,6 @@ class SPortal extends PluginBase{
   /** @var Config */
   private $setting;
 
-  /** @var SWarp */
-  private $swarpInstance;
-
   /** @var PortalManager */
   private $portalManager = null;
 

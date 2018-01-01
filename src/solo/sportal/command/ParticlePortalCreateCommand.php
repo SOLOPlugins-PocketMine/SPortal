@@ -63,12 +63,10 @@ class ParticlePortalCreateCommand extends Command{
     $portal = new ParticlePortal();
     $portal->setWarp($warp);
     $portal->setParticleId($portal);
-
-    $portalManager = $this->owner->getPortalManager();
-    $portalManager->queuePlayerInteract($sender, function(PlayerInteractEvent $event) use($portalManager, $portal){
+    $this->owner->getPortalManager()->queuePlayerInteract($sender, function(PlayerInteractEvent $event) use($portal){
       try{
         $pos = $event->getBlock()->asPosition();
-        $portalManager->addPortal($portal->setPosition($pos->setComponents($pos->x, $pos->y - 1, $pos->z)));
+        SPortal::getInstance()->addPortal($portal->setPosition($pos->setComponents($pos->x, $pos->y - 1, $pos->z)));
         $player->sendMessage(SPortal::$prefix . "포탈을 성공적으로 생성하였습니다.");
       }catch(PortalException $e){
         $player->sendMessage(SPortal::$prefix . $e->getMessage());
