@@ -5,7 +5,6 @@ namespace solo\sportal\command;
 use pocketmine\Player;
 use pocketmine\command\CommandSender;
 use solo\sportal\SPortal;
-use solo\sportal\Process;
 
 class PortalListCommand extends Command{
 

@@ -4,11 +4,11 @@ namespace solo\sportal\command;
 
 use pocketmine\Player;
 use pocketmine\command\CommandSender;
-use pocketmine\block\Block;
+use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\level\particle\Particle;
 use solo\swarp\SWarp;
 use solo\sportal\SPortal;
-use solo\sportal\Process;
+use solo\sportal\PortalException;
 use solo\sportal\portal\ParticlePortal;
 
 class ParticlePortalCreateCommand extends Command{
@@ -48,7 +48,7 @@ class ParticlePortalCreateCommand extends Command{
     }
     if(empty($args)){
       $sender->sendMessage(SPortal::$prefix . "사용법 : " . $this->getUsage() . " - " . $this->getDescription());
-      $sender->sendMessage(SPortal::$prefix . "* 파티클 목록 : " . implode(array_keys(self::$particles)));
+      $sender->sendMessage(SPortal::$prefix . "파티클 목록 : " . implode(array_keys(self::$particles)));
       return true;
     }
 
@@ -60,6 +60,10 @@ class ParticlePortalCreateCommand extends Command{
 
     $particleId = self::$particles[array_shift($args)] ?? Particle::TYPE_EXPLODE;
 
+    $portal = new ParticlePortal();
+    $portal->setWarp($warp);
+    $portal->setParticleId($portal);
+
     $portalManager = $this->owner->getPortalManager();
     $portalManager->queuePlayerInteract($sender, function(PlayerInteractEvent $event) use($portalManager, $portal){
       try{
@@ -70,6 +74,7 @@ class ParticlePortalCreateCommand extends Command{
         $player->sendMessage(SPortal::$prefix . $e->getMessage());
       }
     });
+    $sender->sendMessage(SPortal::$prefix . "포탈을 생성할 위치에 있는 블럭을 터치해주세요");
     return true;
   }
 }

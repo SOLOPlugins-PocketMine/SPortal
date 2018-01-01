@@ -5,9 +5,9 @@ namespace solo\sportal\command;
 use pocketmine\Player;
 use pocketmine\command\CommandSender;
 use pocketmine\block\Block;
-
+use solo\swarp\SWarp;
 use solo\sportal\SPortal;
-use solo\sportal\Process;
+use solo\sportal\PortalException;
 use solo\sportal\portal\BlockTouchPortal;
 
 class TouchPortalCreateCommand extends Command{
