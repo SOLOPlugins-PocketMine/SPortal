@@ -27,6 +27,9 @@ class PortalManager implements Listener{
   /** @var Portal[] */
   private $tickList = [];
 
+  /** @var array */
+  private $queuePlayerInteract = [];
+
   public function __construct(SPortal $owner){
     $this->owner = $owner;
 
@@ -36,6 +39,9 @@ class PortalManager implements Listener{
   }
 
   public function addPortal(Portal $portal) : Portal{
+    if(!$portal->isValid()){
+      throw new PortalException("포탈의 데이터 값이 충분하지 않습니다");
+    }
     if(isset($this->portals[$portal->getHash()])){
       throw new PortalAlreadyExistsException("해당 위치에는 다른 포탈이 존재합니다");
     }
@@ -53,10 +59,14 @@ class PortalManager implements Listener{
     return $this->portals[$pos->getFloorX() . ":" . $pos->getFloorY() . ":" . $pos->getFloorZ() . ":" . $pos->getLevel()] ?? null;
   }
 
-  public function removePortal(Position $pos) : Portal{
+  public function removePortal(Position $pos) : ?Portal{
     $portal = $this->getPortal($pos);
     unset($this->portals[$portal->getHash()]);
     return $portal;
+  }
+
+  public function queuePlayerInteract(Player $player, callable $func){
+    $this->queuePlayerInteract[$player->getName()] = $func;
   }
 
   /**
@@ -64,8 +74,14 @@ class PortalManager implements Listener{
    *
    * @priority HIGH
    */
-  public function handlePlayerInteract(PlayerInteractEvent $event){
+  public function onPlayerInteract(PlayerInteractEvent $event){
     if($event->getAction() === PlayerInteractEvent::RIGHT_CLICK_BLOCK){
+      if(isset($this->queuePlayerInteract[$name = $event->getPlayer()->getName()])){
+        $func = $this->queuePlayerInteract[$name];
+        $func($event);
+        unset($this->queuePlayerInteract[$name]);
+        return;
+      }
       $portal = $this->getPortal($event->getBlock());
 
       if($portal instanceof ActivateOnBlockTouch){
@@ -74,7 +90,7 @@ class PortalManager implements Listener{
     }
   }
 
-  public function handleSneak(PlayerToggleSneakEvent $event){
+  public function onSneak(PlayerToggleSneakEvent $event){
     if($event->isSneaking()){
       $portal = $this->getPortal($event->getBlock());
 
@@ -89,11 +105,15 @@ class PortalManager implements Listener{
    *
    * @priority HIGH
    */
-  public function handleBlockBreak(BlockBreakEvent $event){
+  public function onBlockBreak(BlockBreakEvent $event){
     if($this->getPortal($event->getBlock()) !== null){
       $event->getPlayer()->sendMessage(SPortal::$prefix . "포탈을 파괴할 수 없습니다.");
       $event->setCancelled();
     }
+  }
+
+  public function onPlayerQuit(PlayerQuitEvent $event){
+    unset($this->queuePlayerInteract[$event->getPlayer()->getName()]);
   }
 
   private function load(){

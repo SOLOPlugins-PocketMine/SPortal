@@ -4,7 +4,6 @@ namespace solo\sportal;
 
 use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
-use pocketmine\event\Listener;
 use pocketmine\level\Position;
 use pocketmine\utils\Config;
 
@@ -27,9 +26,6 @@ class SPortal extends PluginBase{
 
   /** @var PortalManager */
   private $portalManager = null;
-
-  /** @var Process[] */
-  private $processList = [];
 
   public function onLoad(){
     if(self::$instance !== null){
@@ -82,32 +78,5 @@ class SPortal extends PluginBase{
 
   public function removePortal(Position $pos) : Portal{
     return $this->portalManager->removePortal($pos);
-  }
-
-  public function setProcess(Player $player, Process $process){
-    $this->processList[$player->getName()] = $process;
-  }
-
-  public function getProcess(Player $player){
-    return $this->processList[$player->getName()] ?? null;
-  }
-
-  public function removeProcess(Player $player){
-    unset($this->processList[$player->getName()]);
-  }
-
-  public function handlePlayerInteract(PlayerInteractEvent $event){
-    if($event->getAction() === PlayerInteractEvent::RIGHT_CLICK_BLOCK){
-      if(($process = $this->getProcess($event->getPlayer())) !== null){
-        $process->handleInteract($event->getBlock());
-        if($process->isEnd()){
-          $this->removeProcess($event->getPlayer());
-        }
-      }
-    }
-  }
-
-  public function handlePlayerQuit(PlayerQuitEvent $event){
-    $this->removeProcess($event->getPlayer());
   }
 }

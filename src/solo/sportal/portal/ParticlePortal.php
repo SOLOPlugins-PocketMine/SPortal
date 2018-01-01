@@ -17,24 +17,28 @@ use solo\swarp\WarpException;
 
 class ParticlePortal extends Portal implements ActivateOnSneak, Tickable{
 
-  private static $generateCount = 5;
+  /** @var int */
+  public static $generateCount = 5;
 
-  public static function setParticleGenerateCount(int $count){
-    self::$generateCount = $count;
-  }
-
+  /** @var int */
   private $particleId;
 
+  /** @var Level|null */
   private $levelInstance = null;
 
-  public function __construct(string $warp, $x, $y, $z, string $level, int $particleId){
+  public function __construct(string $warp = "", float $x = 0, float $y = 0, float $z = 0, string $level = "", int $particleId = Particle::TYPE_EXPLODE){
     parent::__construct($warp, $x, $y, $z, $level);
 
     $this->particleId = $particleId;
   }
 
-  public function getName(){
+  public function getName() : string{
     return "파티클포탈";
+  }
+
+  public function setParticleId(int $particleId) : Portal{
+    $this->particleId = $particleId;
+    return $this;
   }
 
   public function onSneak(Player $player){

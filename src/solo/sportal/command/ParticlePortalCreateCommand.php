@@ -60,40 +60,16 @@ class ParticlePortalCreateCommand extends Command{
 
     $particleId = self::$particles[array_shift($args)] ?? Particle::TYPE_EXPLODE;
 
-    $this->owner->setProcess($sender, new ParticlePortalCreateProcess($sender, $warpName, $particleId));
+    $portalManager = $this->owner->getPortalManager();
+    $portalManager->queuePlayerInteract($sender, function(PlayerInteractEvent $event) use($portalManager, $portal){
+      try{
+        $pos = $event->getBlock()->asPosition();
+        $portalManager->addPortal($portal->setPosition($pos->setComponents($pos->x, $pos->y - 1, $pos->z)));
+        $player->sendMessage(SPortal::$prefix . "포탈을 성공적으로 생성하였습니다.");
+      }catch(PortalException $e){
+        $player->sendMessage(SPortal::$prefix . $e->getMessage());
+      }
+    });
     return true;
-  }
-}
-
-class ParticlePortalCreateProcess extends Process{
-
-  private $warpName;
-  private $particleId;
-  private $end = false;
-
-  public function __construct(Player $player, string $warpName, int $particleId){
-    parent::__construct($player);
-    $this->warpName = $warpName;
-    $this->particleId = $particleId;
-
-    $this->player->sendMessage(SPortal::$prefix . "블럭을 터치하시면 해당 블럭의 바로 위에 포탈이 생성됩니다.");
-  }
-
-  public function handleInteract(Block $block){
-    $portal = new ParticlePortal($this->warpName, $block->getX(), $block->getY() + 1, $block->getZ(), $block->getLevel()->getFolderName(), $this->particleId);
-
-    try{
-      SPortal::getInstance()->addPortal($portal);
-    }catch(PortalException $e){
-      $this->player->sendMessage(SPortal::$prefix . $e->getMessage());
-    }
-
-    $this->player->sendMessage(SPortal::$prefix . "성공적으로 포탈을 생성하였습니다.");
-
-    $this->end = true;
-  }
-
-  public function isEnd() : bool{
-    return $this->end;
   }
 }

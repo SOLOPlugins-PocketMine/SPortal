@@ -27,51 +27,28 @@ class TouchPortalCreateCommand extends Command{
       $sender->sendMessage(SPortal::$prefix . "인게임에서만 사용할 수 있습니다.");
       return true;
     }
-    if(!isset($args[0])){
+    if(empty($args)){
       $sender->sendMessage(SPortal::$prefix . "사용법 : " . $this->getUsage() . " - " . $this->getDescription());
       return true;
     }
 
-    $warpName = $args[0];
-
-    $warp = $this->owner->getWarp($warpName);
+    $warp = SWarp::getInstance()->getWarp($warpName = array_shift($args));
     if($warp === null){
       $sender->sendMessage(SPortal::$prefix . $warpName . " 워프는 존재하지 않습니다.");
       return true;
     }
 
-    $this->owner->setProcess($sender, new TouchPortalCreateProcess($sender, $warpName));
+    $portal = new BlockTouchPortal();
+    $portal->setWarp($warp);
+    $portalManager = $this->owner->getPortalManager();
+    $portalManager->queuePlayerInteract($sender, function(PlayerInteractEvent $event) use($portalManager, $portal){
+      try{
+        $portalManager->addPortal($portal->setPosition($event->getBlock()));
+        $player->sendMessage(SPortal::$prefix . "포탈을 성공적으로 생성하였습니다.");
+      }catch(PortalException $e){
+        $player->sendMessage(SPortal::$prefix . $e->getMessage());
+      }
+    });
     return true;
-  }
-}
-
-class TouchPortalCreateProcess extends Process{
-
-  private $warpName;
-  private $end = false;
-
-  public function __construct(Player $player, string $warpName){
-    parent::__construct($player);
-    $this->warpName = $warpName;
-
-    $this->player->sendMessage(SPortal::$prefix . "블럭을 터치하시면 해당 블럭에 포탈이 생성됩니다.");
-  }
-
-  public function handleInteract(Block $block){
-    $portal = new BlockTouchPortal($this->warpName, $block->getX(), $block->getY(), $block->getZ(), $block->getLevel()->getFolderName());
-
-    try{
-      SPortal::getInstance()->addPortal($portal);
-    }catch(PortalException $e){
-      $this->player->sendMessage(SPortal::$prefix . $e->getMessage());
-    }
-
-    $this->player->sendMessage(SPortal::$prefix . "성공적으로 포탈을 생성하였습니다.");
-
-    $this->end = true;
-  }
-
-  public function isEnd() : bool{
-    return $this->end;
   }
 }
