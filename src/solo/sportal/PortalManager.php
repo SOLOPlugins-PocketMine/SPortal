@@ -9,6 +9,7 @@ use pocketmine\event\player\PlayerToggleSneakEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\level\Position;
+use pocketmine\utils\Config;
 use solo\sportal\hook\ActivateOnBlockTouch;
 use solo\sportal\hook\ActivateOnSneak;
 use solo\sportal\hook\Tickable;
@@ -117,7 +118,7 @@ class PortalManager implements Listener{
   }
 
   private function load(){
-    $this->portalsConfig = new Config($this->getDataFolder() . "portals.yml", Config::YAML);
+    $this->portalsConfig = new Config($this->owner->getDataFolder() . "portals.yml", Config::YAML);
 
     foreach($this->portalsConfig->getAll() as $data){
       $class = $data["class"];

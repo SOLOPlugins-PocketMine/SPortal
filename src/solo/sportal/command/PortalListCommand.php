@@ -3,6 +3,7 @@
 namespace solo\sportal\command;
 
 use pocketmine\Player;
+use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use solo\sportal\SPortal;
 
