@@ -146,7 +146,7 @@ class PortalManager implements Listener{
     }
     $portalsSerialized = [];
     foreach($this->portals as $portal){
-      $data = $portal->yamlSerialize();
+      $data = $portal->jsonSerialize();
       $data["class"] = get_class($portal);
       $portalsSerialized[] = $data;
     }

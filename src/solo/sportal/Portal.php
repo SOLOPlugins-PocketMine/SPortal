@@ -71,7 +71,7 @@ abstract class Portal extends Vector3{
     $warp->warp($player);
   }
 
-  public function yamlSerialize() : array{
+  public function jsonSerialize() : array{
     return [
       "warp" => $this->warp,
       "x" => $this->x,
