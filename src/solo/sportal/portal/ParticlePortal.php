@@ -18,7 +18,7 @@ use solo\swarp\WarpException;
 class ParticlePortal extends Portal implements ActivateOnSneak, Tickable{
 
   /** @var int */
-  public static $generateCount = 5;
+  public static $generateCount = 0;
 
   /** @var int */
   private $particleId;
