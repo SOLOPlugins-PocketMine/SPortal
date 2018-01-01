@@ -80,17 +80,15 @@ class ParticlePortalCreateProcess extends Process{
   }
 
   public function handleInteract(Block $block){
-    if(SPortal::getInstance()->getPortal($block) !== null){
-      $this->player->sendMessage(SPortal::$prefix . "해당 블럭에는 포탈이 이미 존재합니다.");
-      return;
-    }
     $portal = new ParticlePortal($this->warpName, $block->getX(), $block->getY() + 1, $block->getZ(), $block->getLevel()->getFolderName(), $this->particleId);
 
-    SPortal::getInstance()->addPortal($portal);
+    try{
+      SPortal::getInstance()->addPortal($portal);
+    }catch(PortalException $e){
+      $this->player->sendMessage(SPortal::$prefix . $e->getMessage());
+    }
 
     $this->player->sendMessage(SPortal::$prefix . "성공적으로 포탈을 생성하였습니다.");
-
-    SPortal::getInstance()->save();
 
     $this->end = true;
   }

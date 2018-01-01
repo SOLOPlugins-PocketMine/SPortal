@@ -36,11 +36,13 @@ class PortalManager implements Listener{
   }
 
   public function addPortal(Portal $portal) : Portal{
-    $this->portals[$portal->getHash()] = $portal;
-
+    if(isset($this->portals[$portal->getHash()])){
+      throw new PortalAlreadyExistsException("해당 위치에는 다른 포탈이 존재합니다");
+    }
     if($portal instanceof Tickable){
       $this->tickList[$portal->getHash()] = $portal;
     }
+    return $this->portals[$portal->getHash()] = $portal;
   }
 
   public function getAllPortal() : array{
