@@ -28,7 +28,10 @@ class TouchPortalCreateCommand extends Command{
       $sender->sendMessage(SPortal::$prefix . "인게임에서만 사용할 수 있습니다.");
       return true;
     }
-    if(empty($args)){
+
+    $warpName = array_shift($args);
+
+    if($warpName === null || trim($warpName) === ""){
       $sender->sendMessage(SPortal::$prefix . "사용법 : " . $this->getUsage() . " - " . $this->getDescription());
       return true;
     }

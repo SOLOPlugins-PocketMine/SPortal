@@ -47,13 +47,16 @@ class ParticlePortalCreateCommand extends Command{
       $sender->sendMessage(SPortal::$prefix . "이 명령을 실행할 권한이 없습니다.");
       return true;
     }
-    if(empty($args)){
+
+    $warpName = array_shift($args);
+
+    if($warpName === null || trim($warpName) === ""){
       $sender->sendMessage(SPortal::$prefix . "사용법 : " . $this->getUsage() . " - " . $this->getDescription());
       $sender->sendMessage(SPortal::$prefix . "파티클 목록 : " . implode(", ", array_keys(self::$particles)));
       return true;
     }
 
-    $warp = SWarp::getInstance()->getWarp($warpName = array_shift($args));
+    $warp = SWarp::getInstance()->getWarp($warpName);
     if($warp === null){
       $sender->sendMessage(SPortal::$prefix . $warpName . " 워프는 존재하지 않습니다.");
       return true;
