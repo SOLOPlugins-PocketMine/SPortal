@@ -49,7 +49,7 @@ class ParticlePortalCreateCommand extends Command{
     }
     if(empty($args)){
       $sender->sendMessage(SPortal::$prefix . "사용법 : " . $this->getUsage() . " - " . $this->getDescription());
-      $sender->sendMessage(SPortal::$prefix . "파티클 목록 : " . implode(array_keys(self::$particles)));
+      $sender->sendMessage(SPortal::$prefix . "파티클 목록 : " . implode(", ", array_keys(self::$particles)));
       return true;
     }
 
