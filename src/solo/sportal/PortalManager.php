@@ -57,7 +57,7 @@ class PortalManager implements Listener{
   }
 
   public function getPortal(Position $pos) : ?Portal{
-    return $this->portals[$pos->getFloorX() . ":" . $pos->getFloorY() . ":" . $pos->getFloorZ() . ":" . $pos->getLevel()] ?? null;
+    return $this->portals[$pos->getFloorX() . ":" . $pos->getFloorY() . ":" . $pos->getFloorZ() . ":" . $pos->getLevel()->getFolderName()] ?? null;
   }
 
   public function removePortal(Position $pos) : ?Portal{
