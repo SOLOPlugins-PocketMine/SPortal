@@ -124,11 +124,11 @@ class PortalManager implements Listener{
       $class = $data["class"];
       unset($data["class"]);
       if(!class_exists($class, true)){
-        $this->getServer()->getLogger()->critical("[SPortal] " . $class . " 클래스가 존재하지 않습니다.");
+        $this->getLogger()->critical("[SPortal] " . $class . " 클래스가 존재하지 않습니다.");
         continue;
       }
       if(!is_subclass_of($class, Portal::class)){
-        $this->getServer()->getLogger()->critical("[SPortal] " . $class . " 클래스는 " . Portal::class . " 의 서브클래스가 아닙니다.");
+        $this->getLogger()->critical("[SPortal] " . $class . " 클래스는 " . Portal::class . " 의 서브클래스가 아닙니다.");
         continue;
       }
       $portal = $class::jsonDeserialize($data);
