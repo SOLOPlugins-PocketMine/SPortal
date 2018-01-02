@@ -18,7 +18,7 @@ abstract class Portal extends Vector3{
   public function __construct($warp = "", float $x = 0, float $y = 0, float $z = 0, $level = ""){
     parent::__construct($x, $y, $z);
     $this->setWarp($warp);
-    $this->levelName = $level instanceof;
+    $this->levelName = $level instanceof Level ? $level->getFolderName() : $level;
   }
 
   public function setWarp($warp) : Portal{
