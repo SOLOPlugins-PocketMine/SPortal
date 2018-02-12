@@ -2,7 +2,7 @@ name: SPortal
 author: solo
 version: 0.0.1
 api:
-- 3.0.0-ALPHA10
+- 3.0.0-ALPHA11
 main: solo\sportal\SPortal
 depend:
 - SWarp
