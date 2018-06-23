@@ -6,6 +6,7 @@ use pocketmine\Player;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\block\Block;
+use pocketmine\event\player\PlayerInteractEvent;
 use solo\swarp\SWarp;
 use solo\sportal\SPortal;
 use solo\sportal\PortalException;
@@ -17,7 +18,7 @@ class TouchPortalCreateCommand extends Command{
   private $owner;
 
   public function __construct(SPortal $owner){
-    parent::__construct("터치포탈생성", "워프 지점으로 이동하는 포탈을 생성합니다.", "/터치포탈생성 <워프이름>");
+    parent::__construct("터치포탈생성", "워프 지점으로 이동하는 포탈을 생성합니다.", "/터치포탈생성 <워프이름>", ["createtouchportal"]);
     $this->setPermission("sportal.command.create");
 
     $this->owner = $owner;
@@ -36,20 +37,19 @@ class TouchPortalCreateCommand extends Command{
       return true;
     }
 
-    $warp = SWarp::getInstance()->getWarp($warpName = array_shift($args));
+    $warp = SWarp::getInstance()->getWarp($warpName);
     if($warp === null){
       $sender->sendMessage(SPortal::$prefix . $warpName . " 워프는 존재하지 않습니다.");
       return true;
     }
 
-    $portal = new BlockTouchPortal();
-    $portal->setWarp($warp);
+    $portal = new BlockTouchPortal($warpName);
     $this->owner->getPortalManager()->queuePlayerInteract($sender, function(PlayerInteractEvent $event) use($portal){
       try{
         SPortal::getInstance()->addPortal($portal->setPosition($event->getBlock()));
-        $player->sendMessage(SPortal::$prefix . "포탈을 성공적으로 생성하였습니다.");
+        $event->getPlayer()->sendMessage(SPortal::$prefix . "포탈을 성공적으로 생성하였습니다.");
       }catch(PortalException $e){
-        $player->sendMessage(SPortal::$prefix . $e->getMessage());
+        $event->getPlayer()->sendMessage(SPortal::$prefix . $e->getMessage());
       }
     });
     $sender->sendMessage(SPortal::$prefix . "포탈을 생성할 위치에 있는 블럭을 터치해주세요");

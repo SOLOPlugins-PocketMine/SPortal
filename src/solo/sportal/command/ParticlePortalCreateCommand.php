@@ -32,7 +32,7 @@ class ParticlePortalCreateCommand extends Command{
   private $owner;
 
   public function __construct(SPortal $owner){
-    parent::__construct("파티클포탈생성", "워프 지점으로 이동하는 포탈을 생성합니다.", "/파티클포탈생성 <워프이름> [파티클]");
+    parent::__construct("파티클포탈생성", "워프 지점으로 이동하는 포탈을 생성합니다.", "/파티클포탈생성 <워프이름> [파티클]", ["createparticleportal"]);
     $this->setPermission("sportal.command.create");
 
     $this->owner = $owner;
@@ -64,16 +64,15 @@ class ParticlePortalCreateCommand extends Command{
 
     $particleId = self::$particles[array_shift($args)] ?? Particle::TYPE_EXPLODE;
 
-    $portal = new ParticlePortal();
-    $portal->setWarp($warp);
-    $portal->setParticleId($portal);
+    $portal = new ParticlePortal($warpName);
+    $portal->setParticleId($particleId);
     $this->owner->getPortalManager()->queuePlayerInteract($sender, function(PlayerInteractEvent $event) use($portal){
       try{
         $pos = $event->getBlock()->asPosition();
-        SPortal::getInstance()->addPortal($portal->setPosition($pos->setComponents($pos->x, $pos->y - 1, $pos->z)));
-        $player->sendMessage(SPortal::$prefix . "포탈을 성공적으로 생성하였습니다.");
+        SPortal::getInstance()->addPortal($portal->setPosition($pos->setComponents($pos->x, $pos->y + 1, $pos->z)));
+        $event->getPlayer()->sendMessage(SPortal::$prefix . "포탈을 성공적으로 생성하였습니다.");
       }catch(PortalException $e){
-        $player->sendMessage(SPortal::$prefix . $e->getMessage());
+        $event->getPlayer()->sendMessage(SPortal::$prefix . $e->getMessage());
       }
     });
     $sender->sendMessage(SPortal::$prefix . "포탈을 생성할 위치에 있는 블럭을 터치해주세요");

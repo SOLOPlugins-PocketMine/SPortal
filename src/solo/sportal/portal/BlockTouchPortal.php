@@ -3,7 +3,6 @@
 namespace solo\sportal\portal;
 
 use pocketmine\Player;
-
 use solo\sportal\SPortal;
 use solo\sportal\Portal;
 use solo\sportal\PortalException;
@@ -12,7 +11,7 @@ use solo\swarp\WarpException;
 
 class BlockTouchPortal extends Portal implements ActivateOnBlockTouch{
 
-  public function getName(){
+  public function getName() : string{
     return "터치포탈";
   }
 
@@ -27,6 +26,6 @@ class BlockTouchPortal extends Portal implements ActivateOnBlockTouch{
         throw $e;
       }
     }
-    $player->sendMessage(SPortal::$prefix . $this->warp . " (으)로 이동하였습니다.");
+    $player->sendMessage(SPortal::$prefix . $this->warpName . " (으)로 이동하였습니다.");
   }
 }

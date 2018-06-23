@@ -13,7 +13,7 @@ class PortalListCommand extends Command{
   private $owner;
 
   public function __construct(SPortal $owner){
-    parent::__construct("포탈목록", "생성된 포탈의 목록을 확인합니다.", "/포탈목록 [페이지]");
+    parent::__construct("포탈목록", "생성된 포탈의 목록을 확인합니다.", "/포탈목록 [페이지]", ["listportals"]);
     $this->setPermission("sportal.command.list");
 
     $this->owner = $owner;

@@ -60,6 +60,10 @@ class SPortal extends PluginBase{
     self::$instance = null;
   }
 
+  public function getPortalManager(){
+    return $this->portalManager;
+  }
+
   public function addPortal(Portal $portal) : Portal{
     return $this->portalManager->addPortal($portal);
   }

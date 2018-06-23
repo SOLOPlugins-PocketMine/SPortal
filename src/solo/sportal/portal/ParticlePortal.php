@@ -5,9 +5,9 @@ namespace solo\sportal\portal;
 use pocketmine\Server;
 use pocketmine\Player;
 use pocketmine\level\Level;
+use pocketmine\level\particle\Particle;
 use pocketmine\level\particle\GenericParticle;
 use pocketmine\math\Vector3;
-
 use solo\sportal\SPortal;
 use solo\sportal\Portal;
 use solo\sportal\PortalException;
@@ -52,7 +52,7 @@ class ParticlePortal extends Portal implements ActivateOnSneak, Tickable{
         throw $e;
       }
     }
-    $player->sendMessage(SPortal::$prefix . $this->warp . " (으)로 이동하였습니다.");
+    $player->sendMessage(SPortal::$prefix . $this->warpName . " (으)로 이동하였습니다.");
   }
 
   public function onUpdate(int $currentTick){
@@ -60,7 +60,7 @@ class ParticlePortal extends Portal implements ActivateOnSneak, Tickable{
       return;
     }
     if($this->levelInstance === null){
-      $this->levelInstance = Server::getInstance()->getLevelByName($this->level);
+      $this->levelInstance = Server::getInstance()->getLevelByName($this->levelName);
       if(!$this->levelInstance instanceof Level){
         return;
       }

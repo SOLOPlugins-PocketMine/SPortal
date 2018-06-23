@@ -15,7 +15,7 @@ class PortalRemoveCommand extends Command{
   private $owner;
 
   public function __construct(SPortal $owner){
-    parent::__construct("포탈제거", "포탈을 제거합니다.", "/포탈제거");
+    parent::__construct("포탈제거", "포탈을 제거합니다.", "/포탈제거", ["removeportal"]);
     $this->setPermission("sportal.command.remove");
 
     $this->owner = $owner;
@@ -31,6 +31,7 @@ class PortalRemoveCommand extends Command{
       return true;
     }
 
+    $sender->sendMessage(SPortal::$prefix . "제거할 포탈을 터치해주세요.");
     $portalManager = $this->owner->getPortalManager();
     $portalManager->queuePlayerInteract($sender, function(PlayerInteractEvent $event) use($portalManager){
       for($offset = -1; $offset <= 1; $offset++){

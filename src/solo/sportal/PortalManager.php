@@ -8,6 +8,7 @@ use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerToggleSneakEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\block\BlockBreakEvent;
+use pocketmine\scheduler\Task;
 use pocketmine\level\Position;
 use pocketmine\utils\Config;
 use solo\sportal\hook\ActivateOnBlockTouch;
@@ -37,6 +38,22 @@ class PortalManager implements Listener{
     $this->load();
 
     $this->owner->getServer()->getPluginManager()->registerEvents($this, $this->owner);
+
+    $this->owner->getScheduler()->scheduleRepeatingTask(new class($this) extends Task{
+      private $owner;
+
+      public function __construct(PortalManager $owner){
+        $this->owner = $owner;
+      }
+
+      public function onRun(int $currentTick){
+        $this->owner->tick($currentTick);
+      }
+    }, 1);
+  }
+
+  public function getLogger(){
+    return $this->owner->getServer()->getLogger();
   }
 
   public function addPortal(Portal $portal) : Portal{
@@ -62,8 +79,15 @@ class PortalManager implements Listener{
 
   public function removePortal(Position $pos) : ?Portal{
     $portal = $this->getPortal($pos);
+    if($portal === null) return null;
     unset($this->portals[$portal->getHash()]);
     return $portal;
+  }
+
+  public function tick(int $currentTick){
+    foreach($this->tickList as $portal){
+      $portal->onUpdate($currentTick);
+    }
   }
 
   public function queuePlayerInteract(Player $player, callable $func){
@@ -86,17 +110,17 @@ class PortalManager implements Listener{
       $portal = $this->getPortal($event->getBlock());
 
       if($portal instanceof ActivateOnBlockTouch){
-        $this->onBlockTouch($event->getPlayer());
+        $portal->onBlockTouch($event->getPlayer());
       }
     }
   }
 
   public function onSneak(PlayerToggleSneakEvent $event){
     if($event->isSneaking()){
-      $portal = $this->getPortal($event->getBlock());
+      $portal = $this->getPortal($event->getPlayer());
 
       if($portal instanceof ActivateOnSneak){
-        $this->onBlockTouch($event->getPlayer());
+        $portal->onSneak($event->getPlayer());
       }
     }
   }
