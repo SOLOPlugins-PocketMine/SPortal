@@ -80,13 +80,13 @@ abstract class Portal extends Vector3{
   }
 
   public function jsonSerialize() : array{
-    return [
+    return array_merge([
       "warp" => $this->warpName,
       "x" => $this->x,
       "y" => $this->y,
       "z" => $this->z,
       "level" => $this->levelName
-    ];
+    ], $this->dataSerialize());
   }
 
   public static function jsonDeserialize(array $data) : Portal{
@@ -95,7 +95,16 @@ abstract class Portal extends Vector3{
     $portal->x = $data["x"];
     $portal->y = $data["y"];
     $portal->z = $data["z"];
-    $portal->level = $data["level"];
+    $portal->levelName = $data["level"];
+    $portal->dataDeserialize($data);
     return $portal;
+  }
+
+  protected function dataSerialize() : array{
+    return [];
+  }
+
+  protected function dataDeserialize(array $data) : void{
+
   }
 }

@@ -96,15 +96,13 @@ class ParticlePortal extends Portal implements ActivateOnSneak, Tickable{
     }
   }
 
-  public function jsonSerialize() : array{
-    $data = parent::jsonSerialize();
-    $data["particleId"] = $this->particleId;
-    return $data;
+  protected function dataSerialize() : array{
+    return [
+      "particleId" => $this->particleId
+    ];
   }
 
-  public static function jsonDeserialize(array $data) : Portal{
-    $portal = parent::jsonDeserialize($data);
-    $portal->particleId = $data["particleId"];
-    return $portal;
+  protected function dataDeserialize(array $data) : void{
+    $this->particleId = $data["particleId"];
   }
 }
