@@ -91,7 +91,7 @@ abstract class Portal extends Vector3{
 
   public static function jsonDeserialize(array $data) : Portal{
     $portal = (new \ReflectionClass(static::class))->newInstanceWithoutConstructor();
-    $portal->warp = $data["warp"];
+    $portal->warpName = $data["warp"];
     $portal->x = $data["x"];
     $portal->y = $data["y"];
     $portal->z = $data["z"];
